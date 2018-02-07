@@ -49,7 +49,7 @@ $("#submit").on("click", function(event)
 //Gets snapshot of the information present in the database upon program start
 database.ref().on("child_added", function(childSnapshot)
 {
-    console.log(childSnapshot);
+   // console.log(childSnapshot);
 
 },function(errorObject)
 {
