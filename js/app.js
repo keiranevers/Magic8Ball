@@ -11,7 +11,6 @@ $(document).ready(function()
     	$("#submit").hide();
     	$(".progress").show();
     	$("#refresh").show();
-    	$(".form-group").hide();
     //onclick get random function to run, giphy, nytimes or omdb
 	    var functionArray = [giphy, omdb, nytimes];
 	    var randomSelect = Math.floor(Math.random() * 3);
@@ -53,7 +52,7 @@ $(document).ready(function()
 					//title for the movieYear we want to call, we will only use the first letter to try to generate matching results
 					var title = $("#nameInput").val().substring(0, 1);  
 					//year movies came out that you randomly want to generate one by one
-					var movieYear = $("#yearInput").val();
+					var movieYear = Math.floor(Math.random() * 16 + 1998);
 					//make a queryURL variable instead of using literal string name in the AJAX method ...construct URL                                                                                  
 					var queryURL = "https://www.omdbapi.com/?t=" + title + "&y=" + movieYear + "&plot=short&apikey=" + APIKey; 
 					//Code to perform GET request to OMDB API, and then to log the response to the console
@@ -61,22 +60,18 @@ $(document).ready(function()
 						url: queryURL,
 						method: "GET"
 					}).then(function(response){
-						console.log(response);
-						console.log(response.Runtime);
-						console.log(response.Poster);
+
 					
 						//methods run on jQuery selectors return te selector they were run on
 						var titleId = response.Title;
 						
-						var yearId = "2015";
+						var yearId = movieYear
+						console.log(yearId);
 						var posterImage = $("<img>").attr("src", response.Poster);
 						var actors = response.Actors;
 
-						console.log(response.Title);
-						console.log(response.Month);
-						console.log(response.Day);
 						//append the desired parameters to the results section of HTML
-						$("#resultText").append("<p><h2>The movie that shares your Birthday!!!</h2></p><h2>" + response.Title + "</h2><br><h3>Staring: " + response.Actors + "</h3><br><p>" + response.Plot + "</p>");
+						$("#resultText").append("<p><h2>The movie that shares your Birthday from "+ yearId + "!!!</h2></p><h2>" + response.Title + "</h2><br><h3>Staring: " + response.Actors + "</h3><br><p>" + response.Plot + "</p>");
 						$("#results").append("<img class='materialboxed' src=" + response.Poster + "'>");
 						
 					});
@@ -87,36 +82,40 @@ $(document).ready(function()
 			var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=2cd9f063d7884d46800cd9477c11cdb2";
 	
 			//Declare variables to receive month & day entered by user
-			var queryTermMo = "";
+			var queryYr = Math.floor(Math.random() * 16 + 1998);
 
-			var queryTermDay = "";
+			var queryTermMo = $("#monthInput option:selected").val().trim();
+
+			var queryTermDay = $("#dayInput option:selected").val().trim();
+
+			var dateString = queryYr + queryTermMo + queryTermDay;
+
+			var newURL = queryURL + "&begin_date=" + dateString + "&end_date=" + dateString;
 
 			console.log(queryURL);
+			console.log(newURL);
 
 			return $.ajax(
 			{
-				url: queryURL,
+				url: newURL,
 				method: "GET"
 
 			}).done(function(NYTData)
 				{
 
 					
-					console.log("URL: " + queryURL);
+					console.log("URL: " + newURL);
 
-					console.log(NYTData.response);
+					console.log(NYTData.response.docs[0].web_url);
 
 					//Declare a variable to hold the first article returned by the GET request
 					var article = NYTData.response.docs[0].web_url;
-					console.log(article);
-
-					queryTermMo = $("#month").val().trim();
-					queryTermDay = $("#day").val().trim();
-
-					//var newURL = queryURL + "&begin_date=1987" + queryTermMo + queryTermDay + "&end_date=1987" + queryTermMo + queryTermDay;
-					$("#resultText").append("<p><h2>Click on the article that shares your Birthday!!</h2></p><h4><a href=" + article + "'<img src='images/nytimesImage.jpg'></a></h4>");
+					console.log(article);					
+      				// $("#results").append("<a href='" + NYTData.response.docs[0].web_url + "'>" + NYTData.response.docs[0].web_url + "</a>");
+      				$("#resultText").append("<h4><a href=" + article + ">New York Times News of the Day</a></h4>");
+					$("#resultText").append("<p><h2>Click on the article that shares your Birthday from " + queryYr + "!!</h2></p><h4><img src='images/nytimesImage.jpg'></h4>");
 					
-      				$("#results").append("<a href='" + NYTData.response.docs[0].web_url + "'>" + NYTData.response.docs[0].web_url + "</a>");
+      				$("#results").append("<a target='_ blank' href='" + article + "'>" + article + "</a>");
 
 
 				}).fail(function(err)
