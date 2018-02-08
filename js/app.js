@@ -1,25 +1,32 @@
 $(document).ready(function() 
-{
+{	
     $('select').material_select();
     $('.materialboxed').materialbox();
     //$('.carousel.carousel-slider').carousel({fullWidth: true});
     $(".progress").hide();
+    $("#refresh").hide();
     $("#submit").on("click", function() 
     {
     	event.preventDefault();
     	$("#submit").hide();
+    	$(".progress").show();
+    	$("#refresh").show();
+    	$(".form-group").hide();
     //onclick get random function to run, giphy, nytimes or omdb
 	    var functionArray = [giphy, omdb, nytimes];
-	    var randomSelect = 2; //Math.floor(Math.random() * 3);
+	    var randomSelect = Math.floor(Math.random() * 3);
 	    console.log(randomSelect);
 	//based on random return, call function (giphy, nytimes or omdb) with if statement, else last should be giphy if no results are returned from omdb or nytimes
+	    $("#resultText").empty();
+        $("#results").empty();
+
 	    var functionCall = functionArray[randomSelect]().then(function(result) 
 	    {
 	    	//console.log(functionCall);
-	    
+	    		$(".progress").hide();
 	    		$("#nameInput").val("");
-			    $("#monthInput").val("Month");
-			    $("#dayInput").val("Day");
+			    $("#monthInput").empty();
+			    $("#dayInput").empty();
 	  	})
 	});
 
@@ -69,7 +76,7 @@ $(document).ready(function()
 						console.log(response.Month);
 						console.log(response.Day);
 						//append the desired parameters to the results section of HTML
-						$("#resultText").append("<h2>" + response.Title + "</h2><br><h3>Staring: " + response.Actors + "</h3><br><p>" + response.Plot + "</p>");
+						$("#resultText").append("<p><h2>The movie that shares your Birthday!!!</h2></p><h2>" + response.Title + "</h2><br><h3>Staring: " + response.Actors + "</h3><br><p>" + response.Plot + "</p>");
 						$("#results").append("<img class='materialboxed' src=" + response.Poster + "'>");
 						
 					});
@@ -107,7 +114,7 @@ $(document).ready(function()
 					queryTermDay = $("#day").val().trim();
 
 					//var newURL = queryURL + "&begin_date=1987" + queryTermMo + queryTermDay + "&end_date=1987" + queryTermMo + queryTermDay;
-					$("#resultText").append("<h4><a href=" + article + "'<img src='images/nytimesImage.jpg'></a></h4>");
+					$("#resultText").append("<p><h2>Click on the article that shares your Birthday!!</h2></p><h4><a href=" + article + "'<img src='images/nytimesImage.jpg'></a></h4>");
 					
       				$("#results").append("<a href='" + NYTData.response.docs[0].web_url + "'>" + NYTData.response.docs[0].web_url + "</a>");
 

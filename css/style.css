@@ -5,7 +5,7 @@ body
 	background-color: #f7cac9;
 }
 
-h2, h3, p {
+h2, h3, p, a {
 	font-family: Snell Roundhand, cursive;
 	color: green;
 	text-align: center;
